@@ -26,7 +26,7 @@ def get_video_info(url):
     try:
         yt = YouTube(url)
         video_title = yt.title
-        
+
         streams_info = []
         for stream in yt.streams:
             streams_info.append({
@@ -95,7 +95,7 @@ def download_video(url, stream_itag, output_path="."):
         print(f"\nPreparing to download stream itag: {stream_itag}...")
         yt = YouTube(url, on_progress_callback=on_progress)
         stream = yt.streams.get_by_itag(stream_itag)
-        
+
         if not stream:
             print(f"Error: Could not find stream with itag {stream_itag}. It might no longer be available.")
             return
@@ -109,7 +109,7 @@ def download_video(url, stream_itag, output_path="."):
             except (OSError, PermissionError) as e:
                 print(f"Error creating directory {output_path}: {e}")
                 return
-            
+
         filepath = stream.download(output_path=output_path)
         print(f"\nDownload complete!") # Newline after progress bar
         print(f"Video downloaded successfully to: {os.path.abspath(filepath)}")
@@ -141,19 +141,19 @@ def parse_cli_args(args=None):
 def main():
     # Pass sys.argv[1:] to parse_cli_args for normal execution
     # parse_cli_args can also be called with a specific list for testing
-    args = parse_cli_args(sys.argv[1:]) 
-    
+    args = parse_cli_args(sys.argv[1:])
+
     video_url = args.url
     download_directory = args.output
 
     video_info = get_video_info(video_url)
-    
+
     if video_info:
         print(f"\nTitle: {video_info['title']}")
-        
+
         if video_info['streams']:
             chosen_itag = select_stream(video_info['streams'])
-            
+
             if chosen_itag:
                 download_video(video_url, chosen_itag, output_path=download_directory)
             else:
